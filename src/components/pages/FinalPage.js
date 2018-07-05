@@ -8,6 +8,7 @@ const body={
     textAlign: 'center'
   
   }
+  
 class FinalPage extends Component {
 
   constructor(props) {
@@ -18,33 +19,14 @@ class FinalPage extends Component {
      
      };
    }
-  
- 
- 
-    
-    componentDidMount() {
-       const data = new FormData();
-      fetch('http://localhost:8080/last', {
-    method: 'POST',
-    body: data
-  })
-  .then((response) => {
-    console.log(response);
-    response.json().then((results)=>this.setState({ results:results }))
-  } )
-  .catch(
-    error => null // Handle the error response object
-  
-  )
-  
-
-    }
-    render() {
+render() {
+      console.log(this.props.location.state.var1)
       return (
         <div style={body}>
          <br/>
          <br/>
-        <h1> results of extraction </h1>
+        <div>
+        <h1>Analysis Report {this.props.location.state.var1}</h1>
         <br/>
         <div>{this.state.results.asma}</div>
         <br/>
@@ -57,6 +39,7 @@ class FinalPage extends Component {
      <br/>
      <br/>
      <br/>
+     </div>
      <br/>
      <br/>
 
