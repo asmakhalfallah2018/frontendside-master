@@ -13,13 +13,24 @@ const body={
 
 class AccueilPage extends React.Component {
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      var1: "",
+      loading: false,
+    };
+    this.handleUpload = this.handleUpload.bind(this);
+  }
+
   handleUpload(e) {
     e.preventDefault();
     const data = new FormData();
     
     data.append('file', e.target.files[0]);
  data.append('filename', "test");
-    
+    this.setState({
+      loading: true,
+    });
     fetch('http://localhost:8080/upload', { // Your POST endpoint
       method: 'POST',
       body: data
@@ -30,31 +41,20 @@ class AccueilPage extends React.Component {
         return response.json()
       } // if the response is a JSON object
     ).then(
-      success => console.log(success) // Handle the success response object
+      success => {
+        console.log(success) // Handle the success response object
+        this.setState({
+          var1: success.var1,
+          loading: false,
+        })
+      }
     ).catch(
       error => null // Handle the error response object
     );}
 
-  onClick = file=>{
-    const data = new FormData();
-    
-    data.append('file', document.getElementById('pdf').files[0]);
- data.append('filename', 'test');
- this.props.history.push("/final");
- fetch('http://localhost:8080/convert', { // Your POST endpoint
-      method: 'POST',
-      body : data
-    })
-    .then(
-      response => {
-        console.log(response);
-        return response.json()
-      } // if the response is a JSON object
-    ).then(
-      success => console.log(success) // Handle the success response object
-    ).catch(
-      error => null // Handle the error response object
-    ) }
+  onClick = (var1)=>{
+   this.props.history.push("/final", {var1});
+  }
     onShow(e){
 
       var fileDownload = require('js-file-download');
@@ -68,7 +68,26 @@ else {
   alert('There is no file to show . Please Upload a file ! ')
 }
   }    
-
+  onSho= file=>{
+    const data = new FormData();
+    
+    data.append('file', document.getElementById('pdf').files[0]);
+ data.append('filename', 'test');
+ this.props.history.push("/final", {var1: this.state.var1});
+ fetch('http://localhost:8080/showfile', { // Your POST endpoint
+      method: 'POST',
+      body : data
+    })
+    .then(
+      response => {
+        console.log(response);
+        return response.json()
+      } // if the response is a JSON object
+    ).then(
+      success => console.log(success) // Handle the success response object
+    ).catch(
+      error => null // Handle the error response object
+    ) }
      
   render() {
     return ( <div style={body} >
@@ -82,6 +101,14 @@ else {
       <br/>
           <form encType="multipart/form-data" >
           <input  id="pdf" type="file" onChange={this.handleUpload}  accept="application/pdf" />
+          {
+            this.state.loading &&
+            <center>>
+
+              <div className="loader"></div>
+            </center>
+          }
+            
           <br/>
           <br/>
          
@@ -105,12 +132,14 @@ else {
   border: 'none',
   borderRadius: '15px',
   boxShadow: '0 9px #999',
-  transform: 'translateY(4px)'}} onClick={this.onClick}> Convert</button>
+  transform: 'translateY(4px)'}} onClick={() => this.onClick(this.state.var1)}> Convert</button>
+  
 
 
 
             <br/>
             <br/>
+            <button className="But" onClick={this.onSho}><span > trying imageMagick </span></button>
             <br/>
             </div>
     );
